@@ -16,7 +16,15 @@ namespace SkalProj_Datastrukturer_Minne
         //public static Queue<string> theQueue = new Queue<string>();
         //public static Stack<string> theStack = new Stack<string>();
 
-        /* Mina validate input är lite inkonsekventa, mycket upprepning av kod, kan troligen förenklas med en metod som kan anropas på flera ställen ist*/
+        /* Mina validate input är lite inkonsekventa, mycket upprepning av kod, 
+        kan troligen förenklas med en metod som kan anropas på flera ställen ist.
+        
+        Jag har inte heller listat ut hur jag ska hantera varningar om null, 11 stycken.
+
+        Fick inte till att hantera användare som bara skriver text UTAN aranteser i Övning 4 
+        men koden testar paranteser både i matchande par och i sekvens. 
+        
+        */
         
         /* FRÅGOR:
 
@@ -51,6 +59,7 @@ namespace SkalProj_Datastrukturer_Minne
         {
             while (true)
             {
+                Console.WriteLine(":::::::::::::::: MAIN MENU :::::::::::::::::");
                 Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 0) of your choice"
                     + "\n1. Examine a List"
                     + "\n2. Examine a Queue"
@@ -639,7 +648,6 @@ namespace SkalProj_Datastrukturer_Minne
                 Console.Clear();
                 return;
             }
-
         }
         public static void ShowContentOfStack()
         {
@@ -654,9 +662,14 @@ namespace SkalProj_Datastrukturer_Minne
 
             /*
 
-            Ej slutförd ännu tyvärr
+            1. Nyfiken på Dictonary!
+            Och tror stack passar bra så slipper man om jag har förstått saken rätt 
+            loopa igenom ett index och spara undan data, stack känns mer direkt?
+            
+            2. Se nedan.
 
             */
+
 
             /*
              * Use this method to check if the paranthesis in a string is Correct or incorrect.
@@ -664,8 +677,107 @@ namespace SkalProj_Datastrukturer_Minne
              * Example of incorrect: (()]), [), {[()}],  List<int> list = new List<int>() { 1, 2, 3, 4 );
              */
 
+            while (true)
+            {
+                Console.WriteLine(":::::::::::::::: CHECK PARANTHESIS :::::::::::::::::");
+                Console.WriteLine("Please navigate through the menu by inputting the number \n(4, 5, 0) of your choice"
+                    + "\n4 Enter text with paranthesis to test if used correct"
+                    + "\n5 Get back to the main menu"
+                    + "\n0 Exit the application\n");
+                char input5 = ' '; //Creates the character input to be used with the switch-case below.
+                try
+                {
+                    input5 = Console.ReadLine()![0]; //Tries to set input to the first char in an input line
+                }
+                catch (IndexOutOfRangeException) //If the input line is empty, we ask the users for some input.
+                {
+                    Console.Clear();
+                    Console.WriteLine("Please enter some input!\n");
+                    continue;
+                }
+                switch (input5)
+                {
+                    case '4':
+                        Console.Clear();
+                        TestParanthesis();
+                        break;
+                    case '5':
+                        Console.Clear();
+                        return;
+                    case '0':
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Please enter some valid input (4, 5, 0)\n");
+                        break;
+                }
+            }
         }
+        public static void TestParanthesis()
+        {
+            Console.WriteLine(":::::::::::::::: CHECK PARANTHESIS :::::::::::::::::");
+            Console.WriteLine("Please write a text input with paranthesis - minimum two characters\n");
+            Console.WriteLine("There are 4 different kinds: "
+                + "\n Round brackets '()'"
+                + "\n Square brackets '[]'"
+                + "\n Curly brackets '{}'"
+                + "\n Angel brackets '<>'\n");
 
+            string inputToTest = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(inputToTest))
+            {
+                Console.WriteLine($"Text needs to be at least two characters! Please restart.");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+            else if(IsValidSequence(inputToTest))
+            {
+                Console.WriteLine("Your input contains a valid sequence of paranthesis!");
+                Console.WriteLine("..or no paranthesis at all.."); // Har inte löst att man får denna även om man bara skriver abc ännu
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Sorry, your input does not contain a pairing or sequence of paranthesis!");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+        }
+        public static bool IsValidSequence(string inputToTest2)
+        {
+            Dictionary<char, char> paranthesisPairs = new Dictionary<char, char>
+            {
+                { '(', ')' },
+                { '[', ']' },
+                { '{', '}' },
+                { '<', '>' }
+            };
+            Stack<char> stack = new Stack<char>();
+            Stack<char> sequenceStack = new Stack<char>();
+
+            foreach (char c in inputToTest2)
+            {
+                if (paranthesisPairs.ContainsKey(c))
+                {
+                    stack.Push(c);
+                    sequenceStack.Push(c);
+                }
+                else if (paranthesisPairs.ContainsValue(c))
+                {
+                    if (stack.Count == 0 || paranthesisPairs[stack.Pop()] != c)
+                    {
+                        return false;
+                    }
+                    sequenceStack.Pop();
+                }
+            }
+            return sequenceStack.Count == 0 && stack.Count == 0;
+        }
     }
 }
 
