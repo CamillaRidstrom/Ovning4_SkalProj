@@ -742,7 +742,7 @@ namespace SkalProj_Datastrukturer_Minne
             }
             else
             {
-                Console.WriteLine("Sorry, your input does not contain a pairing or sequence of paranthesis!");
+                Console.WriteLine("Sorry, your input does not contain a correct pairing or sequence of paranthesis!");
                 Console.ReadKey();
                 Console.Clear();
                 return;
